@@ -1,98 +1,130 @@
-class Calculator {
-  constructor() {
-    this.currentValue = '';
-    this.history = [];
-  }
-
-  calculate(expression) {
-    try {
-      if (/\/\s*0/.test(expression)) {
-        throw new Error('Cannot divide by zero');
-      }
-      const result = eval(expression);
-      this.history.push(result);
-      this.currentValue = result.toString();
-      return result;
-    } catch (error) {
-      throw new Error('Invalid expression');
-    }
-  }
-
-  clickButton(value) {
-    this.currentValue += value;
-  }
-
-  displayValue() {
-    return this.currentValue;
-  }
-
-  getHistory() {
-    return this.history;
-  }
-}
-
-module.exports = Calculator;
-
-const Calculator = require('../src/Calculator');
+const Calculator = require('./calculator');
 
 describe('Calculator', () => {
-  let calculator;
+    let calculator;
+    let mockDisplay;
+    let mockHistory;
 
-  beforeEach(() => {
-    calculator = new Calculator();
-  });
-
-  describe('Basic Arithmetic Operations', () => {
-    test('should add numbers correctly', () => {
-      expect(calculator.calculate('5 + 3')).toBe(8);
+    beforeEach(() => {
+        // Setup DOM elements
+        document.body.innerHTML = `
+            <input type="text" id="display">
+            <div id="history"></div>
+        `;
+        
+        mockDisplay = document.getElementById('display');
+        mockHistory = document.getElementById('history');
+        calculator = new Calculator();
     });
 
-    test('should subtract numbers correctly', () => {
-      expect(calculator.calculate('10 - 4')).toBe(6);
+    describe('Basic Arithmetic Operations', () => {
+        test('Addition', () => {
+            calculator.appendToExpression('2');
+            calculator.appendToExpression('+');
+            calculator.appendToExpression('2');
+            calculator.calculate();
+            expect(mockDisplay.value).toBe('4');
+        });
+
+        test('Subtraction', () => {
+            calculator.appendToExpression('5');
+            calculator.appendToExpression('-');
+            calculator.appendToExpression('3');
+            calculator.calculate();
+            expect(mockDisplay.value).toBe('2');
+        });
+
+        test('Multiplication', () => {
+            calculator.appendToExpression('4');
+            calculator.appendToExpression('×');
+            calculator.appendToExpression('3');
+            calculator.calculate();
+            expect(mockDisplay.value).toBe('12');
+        });
+
+        test('Division', () => {
+            calculator.appendToExpression('8');
+            calculator.appendToExpression('÷');
+            calculator.appendToExpression('2');
+            calculator.calculate();
+            expect(mockDisplay.value).toBe('4');
+        });
     });
 
-    test('should multiply numbers correctly', () => {
-      expect(calculator.calculate('7 * 2')).toBe(14);
+    describe('Complex Calculations', () => {
+        test('Parentheses', () => {
+            calculator.appendToExpression('(');
+            calculator.appendToExpression('2');
+            calculator.appendToExpression('+');
+            calculator.appendToExpression('3');
+            calculator.appendToExpression(')');
+            calculator.appendToExpression('×');
+            calculator.appendToExpression('2');
+            calculator.calculate();
+            expect(mockDisplay.value).toBe('10');
+        });
+
+        test('Decimal numbers', () => {
+            calculator.appendToExpression('2');
+            calculator.appendToExpression('.');
+            calculator.appendToExpression('5');
+            calculator.appendToExpression('×');
+            calculator.appendToExpression('2');
+            calculator.calculate();
+            expect(mockDisplay.value).toBe('5');
+        });
     });
 
-    test('should divide numbers correctly', () => {
-      expect(calculator.calculate('8 / 2')).toBe(4);
-    });
-  });
+    describe('Error Handling', () => {
+        test('Division by zero', () => {
+            calculator.appendToExpression('5');
+            calculator.appendToExpression('÷');
+            calculator.appendToExpression('0');
+            calculator.calculate();
+            expect(mockDisplay.value).toBe('Error');
+        });
 
-  describe('Complex Calculations with Parentheses', () => {
-    test('should handle expressions with parentheses', () => {
-      expect(calculator.calculate('(2 + 3) * 4')).toBe(20);
-    });
-
-    test('should handle division inside parentheses', () => {
-      expect(calculator.calculate('10 / (2 + 3)')).toBe(2);
-    });
-  });
-
-  describe('Error Scenarios', () => {
-    test('should handle invalid expressions', () => {
-      expect(() => calculator.calculate('5 +')).toThrow('Invalid expression');
+        test('Invalid expression', () => {
+            calculator.appendToExpression('2');
+            calculator.appendToExpression('+');
+            calculator.appendToExpression('+');
+            calculator.calculate();
+            expect(mockDisplay.value).toBe('Error');
+        });
     });
 
-    test('should handle division by zero', () => {
-      expect(() => calculator.calculate('10 / 0')).toThrow('Cannot divide by zero');
-    });
-  });
+    describe('UI Operations', () => {
+        test('Clear button', () => {
+            calculator.appendToExpression('123');
+            calculator.clear();
+            expect(mockDisplay.value).toBe('');
+        });
 
-  describe('UI Interactions and History Functionality', () => {
-    test('should perform calculations via UI interactions', () => {
-      calculator.clickButton('5');
-      calculator.clickButton('+');
-      calculator.clickButton('3');
-      expect(calculator.calculate(calculator.displayValue())).toBe(8);
+        test('Delete button', () => {
+            calculator.appendToExpression('123');
+            calculator.delete();
+            expect(mockDisplay.value).toBe('12');
+        });
     });
 
-    test('should maintain calculation history', () => {
-      calculator.calculate('2 + 2');
-      calculator.calculate('3 + 3');
-      expect(calculator.getHistory()).toContain(4);
-      expect(calculator.getHistory()).toContain(6);
+    describe('History Functionality', () => {
+        test('History updates after calculation', () => {
+            calculator.appendToExpression('2');
+            calculator.appendToExpression('+');
+            calculator.appendToExpression('2');
+            calculator.calculate();
+            expect(mockHistory.innerHTML).toContain('2+2 = 4');
+        });
+
+        test('History maintains last 5 calculations', () => {
+            for (let i = 0; i < 6; i++) {
+                calculator.appendToExpression(i.toString());
+                calculator.appendToExpression('+');
+                calculator.appendToExpression('1');
+                calculator.calculate();
+            }
+            const historyEntries = mockHistory.children.length;
+            expect(historyEntries).toBeLessThanOrEqual(5);
+        });
     });
-  });
 });

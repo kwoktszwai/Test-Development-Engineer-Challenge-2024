@@ -1,25 +1,46 @@
-name: CI
+name: Calculator Tests
 
 on:
   push:
-    branches: [ '*' ]
+    branches: [ main, develop ]
   pull_request:
-    branches: [ 'main' ]
+    branches: [ main ]
 
 jobs:
   test:
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        node-version: [14.x, 16.x, 18.x]
+
     steps:
     - uses: actions/checkout@v2
-
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
+    
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
       with:
-        node-version: '16'
-
+        node-version: ${{ matrix.node-version }}
+        
     - name: Install dependencies
       run: npm install
-
+      
     - name: Run tests
       run: npm test
+      
+    - name: Upload coverage reports
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage/lcov.info
+        flags: unittests
+        name: codecov-umbrella
+        fail_ci_if_error: true
+
+    - name: Cache dependencies
+      uses: actions/cache@v2
+      with:
+        path: |
+          **/node_modules
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
