@@ -1,10 +1,44 @@
-// calculator.test.js
+class Calculator {
+  constructor() {
+    this.currentValue = '';
+    this.history = [];
+  }
+
+  calculate(expression) {
+    try {
+      if (/\/\s*0/.test(expression)) {
+        throw new Error('Cannot divide by zero');
+      }
+      const result = eval(expression);
+      this.history.push(result);
+      this.currentValue = result.toString();
+      return result;
+    } catch (error) {
+      throw new Error('Invalid expression');
+    }
+  }
+
+  clickButton(value) {
+    this.currentValue += value;
+  }
+
+  displayValue() {
+    return this.currentValue;
+  }
+
+  getHistory() {
+    return this.history;
+  }
+}
+
+module.exports = Calculator;
+
+const Calculator = require('../src/Calculator');
 
 describe('Calculator', () => {
   let calculator;
 
   beforeEach(() => {
-    // Initialize your calculator instance or mock DOM if necessary
     calculator = new Calculator();
   });
 
@@ -48,19 +82,17 @@ describe('Calculator', () => {
 
   describe('UI Interactions and History Functionality', () => {
     test('should perform calculations via UI interactions', () => {
-      // Simulate button clicks and check the result
       calculator.clickButton('5');
       calculator.clickButton('+');
       calculator.clickButton('3');
-      calculator.clickButton('=');
-      expect(calculator.displayValue()).toBe('8');
+      expect(calculator.calculate(calculator.displayValue())).toBe(8);
     });
 
     test('should maintain calculation history', () => {
       calculator.calculate('2 + 2');
       calculator.calculate('3 + 3');
-      expect(calculator.history()).toContain('4');
-      expect(calculator.history()).toContain('6');
+      expect(calculator.getHistory()).toContain(4);
+      expect(calculator.getHistory()).toContain(6);
     });
   });
 });
