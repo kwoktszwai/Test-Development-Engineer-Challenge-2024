@@ -1,3 +1,24 @@
+# Calculator Web App
+
+This repository contains a calculator web application with automated tests and continuous integration.
+
+## Testing Framework
+
+We use Jest as our testing framework.
+
+## Local Test Setup
+
+To run the tests locally, follow these steps:
+
+1. Clone the repository
+2. Install dependencies with `npm install`
+3. Run the tests with `npm test`
+
+## Additional Configuration Requirements
+
+None
+
+
 # GitHub Automation Testing Challenge
 
 ## Overview
