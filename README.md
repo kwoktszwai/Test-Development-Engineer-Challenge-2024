@@ -4,7 +4,7 @@ This repository contains a calculator web application with automated tests and c
 
 ## Testing Framework
 
-We use Playwright and Node.js as our testing framework.
+I use Playwright and Node.js as the testing framework.
 
 ## Local Test Setup
 
