@@ -10,12 +10,23 @@ I use Playwright and Node.js as the testing framework.
 
 To run the tests locally:
 
-1. Clone the repository
-2. Run the tests with `npx playwright test`
+1. Install Node.JS Prebuilt Installer
+2. Clone the repository
+2. Open the file with Visual Studio Code
+3. Install Playwright by iputting with terminal:
+`npm init -y`
+`npm install playwright`
+`npx playwright install`
+`npm install @playwright/test`
+4. Run the tests with `npx playwright test`
+
+Expected Result:
+4 passed 
 
 ## Additional Configuration Requirements
 
 None
+
 
 
 # GitHub Automation Testing Challenge
