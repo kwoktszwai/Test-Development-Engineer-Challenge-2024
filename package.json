@@ -1,5 +1,5 @@
 {
-  "name": "dynamsoft_test-main",
+  "name": "qa_test_20241117",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -13,4 +13,3 @@
     "@playwright/test": "^1.48.2",
     "playwright": "^1.48.2"
   }
-}
