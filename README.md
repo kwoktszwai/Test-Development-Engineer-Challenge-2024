@@ -4,15 +4,14 @@ This repository contains a calculator web application with automated tests and c
 
 ## Testing Framework
 
-We use Jest as our testing framework.
+We use Playwright and Node.js as our testing framework.
 
 ## Local Test Setup
 
-To run the tests locally, follow these steps:
+To run the tests locally:
 
 1. Clone the repository
-2. Install dependencies with `npm install`
-3. Run the tests with `npm test`
+2. Run the tests with `npx playwright test`
 
 ## Additional Configuration Requirements
 
