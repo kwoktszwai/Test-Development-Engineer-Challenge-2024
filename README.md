@@ -21,11 +21,11 @@ To run the tests locally:
 4. Run the tests with `npx playwright test`
 
 Expected Result:
-4 passed 
+6 passed 
 
 ## Additional Configuration Requirements
 
-None
+Install Visual Studio Code.
 
 
 
